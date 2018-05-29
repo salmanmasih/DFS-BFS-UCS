@@ -68,6 +68,32 @@ def uniformCostSearch(problem):
                     childnode = util.Node(nextState, node, action, cost+node.path_cost) # makes child node with cumulative cost
                     priority = nodePriority + childnode.path_cost # updates priority
                     fringe.push(childnode, priority) # pushes new node with priority
+                    
+def aStarSearch(problem, heuristic=nullHeuristic):
+    """Search the node that has the lowest combined cost and heuristic first."""
+    "*** YOUR CODE HERE ***"
+    closed = set()  # visited nodes closed set
+    fringe = util.PriorityQueue()  # Priority Queue to give priority for node with least cost
+    currentState = problem.getStartState()  # current state
+    node = util.Node(currentState)
+    h = heuristic(currentState, problem)
+    fringe.push(node, h)  # starts the graph search with priority of parent
+    while fringe:
+        if fringe.isEmpty():
+            return False
+        node = fringe.pop()  # stores most recent node
+        if problem.isGoalState(node.state):
+            return node.solution()  # return current node
+        if node.state not in closed:
+            closed.add(node.state)  # adds recent visited node to closed set
+            for nextState, action, cost in problem.getSuccessors(node.state):  # lists through
+                h = heuristic(nextState, problem)
+                childnode = util.Node(nextState, node, action,
+                                      cost + node.path_cost)  # makes child node with cumulative cost
+                priority = h + childnode.path_cost  # updates priority
+                fringe.push(childnode, priority)  # pushes new node with priority
+
+
 
 
 
@@ -76,3 +102,4 @@ def uniformCostSearch(problem):
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
 ucs = uniformCostSearch
+A*  = aStarSearch
